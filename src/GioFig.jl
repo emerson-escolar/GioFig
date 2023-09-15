@@ -49,6 +49,7 @@ function plot_rips_subcomplexes(data::AbstractVector)
     result = Ripserer.ripserer(rips)
     Plots.plot(result[2])
     Plots.png("pd1")
+    return nothing
 end
 
 
@@ -80,21 +81,22 @@ function _plot_subcomplexes(
     relevant_triangles = map(x->Ripserer.simplex(rips, Val(2), Tuple(x)), collect(triangles))
 
     simplices = sort([relevant_triangles; relevant_edges]; by=Ripserer.birth, rev=true)
-    Plots.scatter(data; markersize=4, legend=false, aspect_ratio=1, axis=([], false))
+    Plots.scatter(data; markersize=8, legend=false, aspect_ratio=1, axis=([], false))
     Plots.png(@sprintf("%.12f", 0.0))
     for t in sorted_thresholds
         while length(simplices) > 0 && Ripserer.birth(simplices[end]) <= t
             spx = pop!(simplices)
             print(spx, Ripserer.dim(spx), "\n")
             if Ripserer.dim(spx) == 1
-                Plots.plot!(spx, data; linealpha=0.5, linecolor=:black)
+                Plots.plot!(spx, data; linewidth=4, linealpha=1, linecolor=:black)
             else
-                Plots.plot!(spx, data; linealpha=0.5, linecolor=:black, fill=(0,0.5,:blue))
+                Plots.plot!(spx, data; linewidth=4, linealpha=1, linecolor=:black, fill=(0,0.5,:blue))
             end            
         end
         Plots.png(@sprintf("%.12f",t))
         # Plots.png(string(t))
-    end    
+    end
+    return nothing
 end
 
 end # module GioFig
